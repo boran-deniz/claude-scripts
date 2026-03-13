@@ -3,13 +3,14 @@ const puppeteer = require('puppeteer');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
-    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
-        '/root/.cache/ms-playwright/chromium-1194/chrome-linux/chrome';
-    const browser = await puppeteer.launch({
+    const launchOptions = {
         headless: true,
-        executablePath,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
+    };
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+    const browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
 
