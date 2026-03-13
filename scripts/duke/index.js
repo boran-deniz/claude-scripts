@@ -3,7 +3,14 @@ const puppeteer = require('puppeteer');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
-    const browser = await puppeteer.launch({ headless: true });
+    const launchOptions = {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    };
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+    const browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
 

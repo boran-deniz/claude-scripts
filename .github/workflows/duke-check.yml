@@ -1,0 +1,28 @@
+name: Duke — Termin prüfen
+
+on:
+  workflow_dispatch:  # Manuell auslösbar per Klick
+  schedule:
+    - cron: '0 8 * * 2-6'  # Mo–Fr um 08:00 UTC (= 09:00 MEZ / 10:00 MESZ)
+
+jobs:
+  check-appointment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: scripts/duke/package-lock.json
+
+      - name: Dependencies installieren
+        working-directory: scripts/duke
+        run: npm ci
+
+      - name: Termin prüfen
+        working-directory: scripts/duke
+        run: node index.js
